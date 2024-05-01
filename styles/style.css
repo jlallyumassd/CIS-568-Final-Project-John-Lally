@@ -1,0 +1,87 @@
+#title{
+    display: block;
+    margin: 10px auto;
+    text-align: center;
+    width: 90vw;
+    font-family: 'Georgia', serif;
+    font-size: 20pt;
+    color: #808080;
+}
+#fig{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    width: 90vw;
+}
+.fig{
+    fill: white;
+}
+.xAxis{
+    font-family: 'Georgia', serif;
+    font-size: 20pt;
+}
+.yAxis{
+    font-family: 'Georgia', serif;
+    font-size: 20pt;
+}
+
+.axis{
+    font-size: 30pt;
+}
+.bars{
+    fill-opacity: .7;
+
+}
+:hover.bars{
+    fill-opacity: .9;
+    fill: darkred;
+}
+.stat{
+    font-family: 'Georgia', serif;
+    font-size: 25pt;
+}
+text.label{
+    font-family: 'Georgia', serif;
+    font-size: 32pt;
+}
+text.plotTitle{
+    font-family: 'Georgia', serif;
+    font-size: 32pt;
+}
+/* Center the table on the page */
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td{
+    border: none;
+    border-collapse: collapse;
+    padding: 5px;
+    width: 10vw;
+}
+.slider-container {
+    width: 25%;
+    margin: 20px auto;
+    font-family: 'Georgia', serif;
+}
+.slider-label {
+    display: block;
+    margin-bottom: 5px;
+    font-family: 'Georgia', serif;
+}
+.page-title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: 'Georgia', serif;
+}
+svg text {
+    font-family: 'Georgia', serif;
+}
+body {
+    background-color: white;
+}

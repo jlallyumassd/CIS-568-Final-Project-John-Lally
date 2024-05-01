@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualizing the Impact of Meteorite Landings Over Time and by Type on Earth’s Surface</title>
+
+    <script src="impact_map.js?2"></script>
+    <script src="mass_distribution.js?2"></script>
+    <script src="time_series.js?2"></script>
+    <script src="description.js?2"></script>
+
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="../styles/style.css">
+
+    <script src="../lib/d3.js"></script>
+    <script src="../lib/topojson.v2.js"></script>
+
+
+</head>
+<body>
+<!--Meteorite_Landings_20240418.csv: https://data.nasa.gov/Space-Science/Meteorite-Landings/gh4g-9sfh/about_data -->
+<div class="page-title">Visualizing the Impact of Meteorite Landings</div>
+<table>
+    <tr>
+        <td><svg width="500px" height="500px" viewBox="0 0 1200 800" id="main"></svg></td>
+        <td><svg width="500px" height="500px" id="right"></svg></td>
+    </tr>
+    <tr>
+        <td><svg width="500px" height="400px"  id="bottom_left"></svg></td>
+        <td><svg width="500px" height="400px"  id="bottom_right"></svg></td>
+    </tr>
+</table>
+
+<div class="slider-container">
+    <label for="mass-range" class="slider-label">Mass Range:</label>
+    <input type="text" id="mass-range" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    <div id="mass-slider"></div>
+</div>
+<div class="slider-container">
+    <label for="year-range" class="slider-label">Year Range:</label>
+    <input type="text" id="year-range" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    <div id="year-slider"></div>
+</div>
+
+
+<script>
+    let meteorite_landings = "../data/Meteorite_Landings_20240418.csv";
+    let data;
+
+    // Load the data and then initialize the visualizations
+    d3.csv(meteorite_landings).then(function(loadedData) {
+        data = loadedData;
+        main(data);
+    });
+
+    function main(data) {
+        // Define and draw subplots
+        let fig_main = d3.select("#main")
+            .append("g")
+            .append('rect')
+            .attr("class", "fig")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+
+        // Other SVG areas setup
+        let fig_right = d3.select("#right")
+            .append("g")
+            .append('rect')
+            .attr("class", "fig")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        let fig_bottom_right = d3.select("#bottom_right")
+            .append("g")
+            .append('rect')
+            .attr("class", "fig")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        let fig_bottom_left = d3.select("#bottom_left")
+            .append("g")
+            .append('rect')
+            .attr("class", "fig")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        // Calling visualization functions
+        impact_map(data, 'main');
+        mass_distribution(data.map(d => +d.mass), 10, 'bottom_right');
+        time_series(data.map(d => +d.year), 'bottom_left', "Yearly Meteorite Landings", "Year", "Number of Landings");
+        updateDescription('right');
+    }
+
+    function updateVisualizations(minMass, maxMass, startYear, endYear) {
+        // Filter data based on the provided slider values
+        let filteredData = data.filter(function(d) {
+            let withinMassRange = (minMass === null || maxMass === null) || (d.mass >= minMass && d.mass <= maxMass);
+            let withinYearRange = (startYear === null || endYear === null) || (d.year >= startYear && d.year <= endYear);
+            return withinMassRange && withinYearRange;
+        });
+
+        // Redraw the visualizations with the filtered data
+        impact_map(filteredData, 'main');
+        mass_distribution(filteredData.map(d => +d.mass), 10, 'bottom_right');
+        time_series(filteredData.map(d => +d.year), 'bottom_left', "Yearly Meteorite Landings", "Year", "Number of Landings");
+
+
+    }
+
+    $("#mass-slider").slider({
+        range: true,
+        min: 0,
+        max: 60000000,
+        values: [0, 60000000],
+        slide: function(event, ui) {
+            $("#mass-range").val(ui.values[0] + " - " + ui.values[1] + " grams");
+            updateVisualizations(ui.values[0], ui.values[1], null, null);
+        }
+    });
+
+    $("#year-slider").slider({
+        range: true,
+        min: 860,
+        max: 2013,
+        values: [860, 2013],
+        slide: function(event, ui) {
+            $("#year-range").val(ui.values[0] + " - " + ui.values[1]);
+            updateVisualizations(null, null, ui.values[0], ui.values[1]);
+        }
+    });
+
+</script>
+
+
+</body>
+</html>
